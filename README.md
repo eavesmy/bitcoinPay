@@ -17,27 +17,24 @@ import(
     "fmt"
 )
 
-function main(){
-    eth := bcp.NewEthWallet(privateKey)
-    btc := bcp.NewBitcoinWallet()
-    eos := bcp.NewEosWallet()
+func main(){
 
-    eth.Balance() //BigNumber 
-    b := btc.Balance()
-    b = eos.Balance()
+	eth := bcp.Wallet("eth",privateKey)
+	// or you can create a new wallet.
+	// eth := bcp.Wallet("eth").New()
+
+    b := eth.Balance() //BigNumber 
 
     fmt.Println(b.ToString())
 
-    b.History()
-    b.LastTransferIn()
-    b.LastTransferOut()
+    eth.History()
+    eth.LastTransferIn()
+    eth.LastTransferOut()
     
-    txid := eth.Transfer("address",bcp.BigNumber(0.0001),"data")
+    // txid := eth.Transfer(otherEthWalletAddress,bcp.BigNumber(0.0001),"data")
 
-    fmt.Println(txid)
+    //transactions := eth.QueryByTxid(txid) // eth,btc,eos,xmr
 
-    transactions := bcp.QueryByTxid(txid) // eth,btc,eos,xmr
-
-    fmt.Println(transactions)
+    // fmt.Println(transactions)
 }
 ```

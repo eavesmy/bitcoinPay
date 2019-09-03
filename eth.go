@@ -3,6 +3,7 @@ package bcp
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -22,6 +23,8 @@ func (w *EthWallet) New() WalletBase {
 	key, _ := crypto.GenerateKey()
 	w.privateKey = hex.EncodeToString(key.D.Bytes())
 	w.address = crypto.PubkeyToAddress(key.PublicKey).Hex()
+
+	fmt.Println(w.address, 123)
 	return w
 }
 
@@ -29,7 +32,7 @@ func (w *EthWallet) Address() string {
 	return w.address
 }
 
-func (w *EthWallet) QRCode() []byte {
+func (w *EthWallet) QRCode() []byte { // for receive coin
 	qrCode, _ := qr.Encode(w.address, qr.M, qr.Auto)
 	qrCode, _ = barcode.Scale(qrCode, 200, 200)
 
