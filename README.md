@@ -7,8 +7,7 @@
 - [ ] Eos
 - [ ] Xmr
 
-# Api
-### 创建钱包
+# 示例
 ``` golang
 package main
 
@@ -16,6 +15,9 @@ import(
     bcp "github.com/zdy23216340/bitcoinPay"
     "fmt"
 )
+
+const address = ""
+const privateKey = ""
 
 func main(){
 
@@ -25,16 +27,13 @@ func main(){
 
     b := eth.Balance() //BigNumber 
 
-    fmt.Println(b.ToString())
+	params := map[string]string{}
+	eth.Transfer("to",amount,params)
 
-    eth.History()
-    eth.LastTransferIn()
-    eth.LastTransferOut()
-    
-    // txid := eth.Transfer(otherEthWalletAddress,bcp.BigNumber(0.0001),"data")
+    transaction := eth.QueryByTxid(txid) // eth,btc,eos,xmr
+    txs := eth.History()
+	fmt.Println(transaction,txs)
 
-    //transactions := eth.QueryByTxid(txid) // eth,btc,eos,xmr
-
-    // fmt.Println(transactions)
+	// check github.com/zdy23216340/bitcoinPay/core.go
 }
 ```

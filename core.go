@@ -1,6 +1,7 @@
 package bcp
 
 import (
+	"github.com/eavesmy/bitcoinPay/lib"
 	"math/big"
 	"strings"
 )
@@ -8,15 +9,15 @@ import (
 type WalletBase interface {
 	New() WalletBase
 	QRCode() []byte
-	Address() string
+	Address(...string) string
 	PrivateKey() string
 	Balance() *big.Int
-	BalanceOf(string)
-	History()
+	BalanceOf(string) *big.Int
+	History(...map[string]string) []*lib.Transaction
 	LastTransferIn()
 	LastTransferOut()
-	Transfer(string)
-	// QueryByTxid(string, string)
+	Transfer(string, float64, map[string]string)
+	QueryByTxid(string) *lib.Transaction
 }
 
 func Wallet(chain string, pks ...string) WalletBase {
