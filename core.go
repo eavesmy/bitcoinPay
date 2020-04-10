@@ -35,6 +35,10 @@ func Wallet(chain string, pks ...string) WalletBase {
 	switch chain {
 	case "eth":
 		wallet = &EthWallet{privateKey: privateKey}
+	case "btc":
+		wallet = &BtcWallet{privateKey: privateKey,id:0}
+	case "usdt":
+		wallet = &BtcWallet{privateKey: privateKey,id:31}
 	}
 
 	return wallet

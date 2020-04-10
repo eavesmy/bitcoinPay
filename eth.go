@@ -39,6 +39,9 @@ func (w *EthWallet) New() WalletBase {
 	return w
 }
 
+// TODO: GetAddress method
+// Through private key generate address.
+
 // Get wallet address or set address to wallet.
 func (w *EthWallet) Address(addrs ...string) string {
 	if len(addrs) > 0 {
@@ -126,7 +129,7 @@ func (w *EthWallet) Transfer(addr string, amount float64, options map[string]str
 	// sign prams:
 	// hex := sign(map[string]string{ })
 
-	hex := sign(map[string]string{
+	hex := w.sign(map[string]string{
 		"from":       w.address,
 		"privatekey": w.privateKey,
 		"amount":     strconv.FormatFloat(amount, 'f', 6, 64),
@@ -135,7 +138,8 @@ func (w *EthWallet) Transfer(addr string, amount float64, options map[string]str
 
 	ret := eth.SendRawTransaction(hex)
 	fmt.Println(ret)
-
+    
+    // TODO:
 	// test not finish.
 }
 
@@ -145,7 +149,7 @@ func (w *EthWallet) QueryByTxid(txid string) *lib.Transaction {
 }
 
 // params: to:string privatekey:string amount:int data:[]byte gasLimit:int64 gasPrice:int64 chainid:int
-func sign(params map[string]string) string {
+func (w *EthWallet) sign(params map[string]string) string {
 
 	wg := &sync.WaitGroup{}
 	wc := 0
