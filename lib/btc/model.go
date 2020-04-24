@@ -47,3 +47,39 @@ type Addr struct {
 	Symbol string `json:"symbol"`
 	Value  string `json:"value"`
 }
+
+type Transaction struct {
+	Amount string `json:"amount"`
+	Block int `json:"block"`
+	Blockhash string `json:"blockhash"`
+	Blocktime int `json:"blocktime"`
+	Category string `json:"category"`
+	Confirmations int `json:"confirmations"`
+	Data string `json:"data"`
+	Deadline int `json:"deadline"`
+	Divisible bool `json:"divisible"`
+	Earlybonus int `json:"earlybonus"`
+	Ecosystem string `json:"ecosystem"`
+	Fee string `json:"fee"`
+	Ismine bool `json:"ismine"`
+	Percenttoissuer int `json:"percenttoissuer"`
+	Positioninblock int `json:"positioninblock"`
+	Propertyid int `json:"propertyid"`
+	Propertyiddesired int `json:"propertyiddesired"`
+	Propertyname string `json:"propertyname"`
+	Propertytype string `json:"propertytype"`
+	Sendingaddress string `json:"sendingaddress"`
+	Subcategory string `json:"subcategory"`
+	Tokensperunit string `json:"tokensperunit"`
+	Txid string `json:"txid"`
+	Type string `json:"type"`
+	TypeInt int `json:"type_int"`
+	URL string `json:"url"`
+	Valid bool `json:"valid"`
+	Version int `json:"version"`
+}
+
+type QueryGethHistory struct {
+    Transactions []*Transaction `json:"transactions"`
+}
+

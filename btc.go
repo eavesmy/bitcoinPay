@@ -66,6 +66,12 @@ func (w *BtcWallet) History(params ...map[string]string) []*lib.Transaction {
 	return nil
 }
 
+// 获取手续费
+func (w *BtcWallet) Fee() string{
+    // 获取最后一笔账单
+    return btc.GetFee()
+}
+
 func (w *BtcWallet) LastTransferIn()                                                 {}
 func (w *BtcWallet) LastTransferOut()                                                {}
 func (w *BtcWallet) Transfer(addr string, amount float64, options map[string]string) {}

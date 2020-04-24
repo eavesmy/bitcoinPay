@@ -200,3 +200,7 @@ func (w *EthWallet) sign(params map[string]string) string {
 	b, _ := rlp.EncodeToBytes(signed)
 	return hex.EncodeToString(b)
 }
+
+func(w *EthWallet) Fee() string {
+    return eth.GasPrice()
+}

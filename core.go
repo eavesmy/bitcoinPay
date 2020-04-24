@@ -15,6 +15,7 @@ type WalletBase interface {
 	BalanceOf(string) *big.Int
 	History(...map[string]string) []*lib.Transaction
 	LastTransferIn()
+    Fee() string
 	LastTransferOut()
 	Transfer(string, float64, map[string]string)
 	QueryByTxid(string) *lib.Transaction

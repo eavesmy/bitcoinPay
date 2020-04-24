@@ -17,7 +17,8 @@ const HOST = "https://api.omniexplorer.info"
 
 // routes
 const (
-	ADDRDETAIL = "/v1/address/addr/"
+	ADDRDETAIL  = "/v1/address/addr/"
+	GETHHISTORY = "/v1/properties/gethistory/3"
 )
 
 func request(path string, data string) (info []byte) {
@@ -54,5 +55,15 @@ func GetBalance(addr string, id int) int64 {
 		}
 	}
 
-    return 0
+	return 0
+}
+
+func GetFee() string{
+	query := "page=0"
+	res := request(GETHHISTORY, query)
+
+    ts := &QueryGethHistory{}
+    json.Unmarshal(res,&ts)
+
+    return ts.Transactions[0].Fee
 }

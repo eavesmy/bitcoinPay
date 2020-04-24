@@ -132,3 +132,4 @@ func GetAddress(pub_bytes []byte) (address string) {
 
     return address
 }
+
