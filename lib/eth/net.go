@@ -45,6 +45,22 @@ func GetEthBalance(address string) string {
 	return data.Result.(string)
 }
 
+func GetTokenBalance(addr string, contract string) string {
+
+	data, err := getRequest(map[string]string{
+		"module":  "account",
+		"action":  "tokenbalance",
+        "contractaddress": contract,
+		"address": addr,
+	})
+
+	if err != nil {
+		return "0"
+	}
+
+	return data.Result.(string)
+}
+
 // Get nonce
 func GetTransactionCount(address string) string {
 

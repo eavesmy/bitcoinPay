@@ -11,6 +11,7 @@ import (
 	gtype "github.com/eavesmy/golang-lib/type"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 const HOST = "https://api.omniexplorer.info"
@@ -18,6 +19,7 @@ const HOST = "https://api.omniexplorer.info"
 // routes
 const (
 	ADDRDETAIL  = "/v1/address/addr/"
+	ADDRBALANCE = "/v2/address/addr/"
 	GETHHISTORY = "/v1/properties/gethistory/3"
 )
 
@@ -58,12 +60,39 @@ func GetBalance(addr string, id int) int64 {
 	return 0
 }
 
-func GetFee() string{
+func GetBalances(addrs []string, id string) map[string]string {
+
+	querys := []string{}
+	for _, addr := range addrs {
+		querys = append(querys, "addr="+addr)
+	}
+	query := strings.Join(querys, "&")
+
+	var info map[string]map[string][]*Balance
+	res := request(ADDRBALANCE, query)
+	json.Unmarshal(res, &info)
+
+	ret := map[string]string{}
+
+	for k, v := range info {
+		_v := v["balance"]
+
+		for _, balance := range _v {
+			if id == balance.ID {
+				ret[k] = balance.Value
+			}
+		}
+	}
+	return ret
+}
+
+func GetFee() string {
+
 	query := "page=0"
 	res := request(GETHHISTORY, query)
 
-    ts := &QueryGethHistory{}
-    json.Unmarshal(res,&ts)
+	ts := &QueryGethHistory{}
+	json.Unmarshal(res, &ts)
 
-    return ts.Transactions[0].Fee
+	return ts.Transactions[0].Fee
 }

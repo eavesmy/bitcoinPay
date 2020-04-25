@@ -12,7 +12,7 @@ type WalletBase interface {
 	Address(...string) string
 	PrivateKey() string
 	Balance() *big.Int
-	BalanceOf(string) *big.Int
+	BalanceOf(string,string) *big.Int
 	History(...map[string]string) []*lib.Transaction
 	LastTransferIn()
     Fee() string

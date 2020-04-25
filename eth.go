@@ -77,8 +77,8 @@ func (w *EthWallet) Balance() *big.Int {
 }
 
 // Like Balance().
-func (w *EthWallet) BalanceOf(addr string) *big.Int {
-	balance := eth.GetEthBalance(addr)
+func (w *EthWallet) BalanceOf(addr string,contract string) *big.Int {
+	balance := eth.GetTokenBalance(addr,contract)
 	i_balance, _ := strconv.Atoi(balance)
 	return big.NewInt(int64(i_balance))
 }
@@ -138,8 +138,8 @@ func (w *EthWallet) Transfer(addr string, amount float64, options map[string]str
 
 	ret := eth.SendRawTransaction(hex)
 	fmt.Println(ret)
-    
-    // TODO:
+
+	// TODO:
 	// test not finish.
 }
 
@@ -201,6 +201,6 @@ func (w *EthWallet) sign(params map[string]string) string {
 	return hex.EncodeToString(b)
 }
 
-func(w *EthWallet) Fee() string {
-    return eth.GasPrice()
+func (w *EthWallet) Fee() string {
+	return eth.GasPrice()
 }

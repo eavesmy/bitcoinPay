@@ -58,7 +58,18 @@ func (w *BtcWallet) Balance() *big.Int {
     return big.NewInt(amount)
 }
 
-func (w *BtcWallet) BalanceOf(addr string) *big.Int {
+func (w *BtcWallet) Balances(addrs []string,ids ...string) (ret map[string]string){
+    if len(addrs) == 0 {
+        return
+    }
+    id := "0"
+    if len(ids) > 0 {
+        id = ids[0]
+    }
+    return btc.GetBalances(addrs,id)
+}
+
+func (w *BtcWallet) BalanceOf(addr string,id string) *big.Int {
 	return nil
 }
 
