@@ -17,6 +17,7 @@ import (
 	"io/ioutil"
 	"math"
 	"math/big"
+	"regexp"
 	"strconv"
 	"sync"
 )
@@ -77,8 +78,8 @@ func (w *EthWallet) Balance() *big.Int {
 }
 
 // Like Balance().
-func (w *EthWallet) BalanceOf(addr string,contract string) *big.Int {
-	balance := eth.GetTokenBalance(addr,contract)
+func (w *EthWallet) BalanceOf(addr string, contract string) *big.Int {
+	balance := eth.GetTokenBalance(addr, contract)
 	i_balance, _ := strconv.Atoi(balance)
 	return big.NewInt(int64(i_balance))
 }
@@ -203,4 +204,9 @@ func (w *EthWallet) sign(params map[string]string) string {
 
 func (w *EthWallet) Fee() string {
 	return eth.GasPrice()
+}
+
+func ValidAddress(addr string) bool {
+	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
+	return re.MatchString(addr)
 }
