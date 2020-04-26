@@ -2,6 +2,7 @@ package bcp
 
 import (
 	"bytes"
+    "strings"
 	"encoding/hex"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
@@ -92,7 +93,7 @@ func (w *BtcWallet) sign(param map[string]string) string {
 	return ""
 }
 
-func (w *BtcWallet) ValidAddress(addr string) bool {
+func (w *BtcWallet) ValidAddress(address string) bool {
 
     len := len(address)
     if len < 25 {
