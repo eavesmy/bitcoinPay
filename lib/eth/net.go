@@ -102,6 +102,7 @@ func GasPrice() string {
 	return data.Result.(string)
 }
 
+
 func GetTransactionByHash(hash string) *lib.Transaction {
 	data, err := getRequest(map[string]string{
 		"module": "proxy",
