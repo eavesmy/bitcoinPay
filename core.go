@@ -17,7 +17,8 @@ type WalletBase interface {
 	LastTransferIn()
 	Fee() string
 	LastTransferOut()
-	Transfer(string, float64, map[string]string)
+	Transfer(string, string, ...map[string]string) error
+	TokenTransfer(string, string, string, ...*Option) error
 	QueryByTxid(string) *lib.Transaction
 	ValidAddress(string) bool
 }
@@ -44,4 +45,16 @@ func Wallet(chain string, pks ...string) WalletBase {
 	}
 
 	return wallet
+}
+
+type Option struct {
+	From     string
+	To       string
+	Amount   string
+	Data     string
+	Gas      string
+	Limit    int
+	Nonce    string
+	ChanId   int
+	Contract string
 }

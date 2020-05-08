@@ -48,10 +48,10 @@ func GetEthBalance(address string) string {
 func GetTokenBalance(addr string, contract string) string {
 
 	data, err := getRequest(map[string]string{
-		"module":  "account",
-		"action":  "tokenbalance",
-        "contractaddress": contract,
-		"address": addr,
+		"module":          "account",
+		"action":          "tokenbalance",
+		"contractaddress": contract,
+		"address":         addr,
 	})
 
 	if err != nil {
@@ -70,9 +70,13 @@ func GetTransactionCount(address string) string {
 		"address": address,
 	})
 
+	fmt.Println(data, err)
+
 	if err != nil {
 		return "0x"
 	}
+
+	fmt.Println("获取 nounce", data, err)
 
 	return data.Result.(string)
 }
@@ -101,7 +105,6 @@ func GasPrice() string {
 
 	return data.Result.(string)
 }
-
 
 func GetTransactionByHash(hash string) *lib.Transaction {
 	data, err := getRequest(map[string]string{
@@ -176,7 +179,7 @@ func getRequest(params map[string]string) (*etherscan_data, error) {
 	data := &etherscan_data{}
 	json.Unmarshal(buffer, data)
 
-	if data.Result == "" {
+	if data.Result == nil {
 		fmt.Println("error: ", params["module"], params["action"], string(buffer))
 		errData := &etherscan_error{}
 		json.Unmarshal(buffer, errData)

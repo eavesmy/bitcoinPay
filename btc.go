@@ -2,8 +2,8 @@ package bcp
 
 import (
 	"bytes"
-    "strings"
 	"encoding/hex"
+	"fmt"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 	"github.com/eavesmy/bitcoinPay/lib"
@@ -11,12 +11,13 @@ import (
 	"image/png"
 	"io/ioutil"
 	"math/big"
+	"strings"
 )
 
 type BtcWallet struct {
 	privateKey string
 	address    string
-    id int
+	id         int
 }
 
 func (w *BtcWallet) New() WalletBase {
@@ -55,22 +56,22 @@ func (w *BtcWallet) PrivateKey() string {
 }
 
 func (w *BtcWallet) Balance() *big.Int {
-    amount := btc.GetBalance(w.address,w.id)
-    return big.NewInt(amount)
+	amount := btc.GetBalance(w.address, w.id)
+	return big.NewInt(amount)
 }
 
-func (w *BtcWallet) Balances(addrs []string,ids ...string) (ret map[string]string){
-    if len(addrs) == 0 {
-        return
-    }
-    id := "0"
-    if len(ids) > 0 {
-        id = ids[0]
-    }
-    return btc.GetBalances(addrs,id)
+func (w *BtcWallet) Balances(addrs []string, ids ...string) (ret map[string]string) {
+	if len(addrs) == 0 {
+		return
+	}
+	id := "0"
+	if len(ids) > 0 {
+		id = ids[0]
+	}
+	return btc.GetBalances(addrs, id)
 }
 
-func (w *BtcWallet) BalanceOf(addr string,id string) *big.Int {
+func (w *BtcWallet) BalanceOf(addr string, id string) *big.Int {
 	return nil
 }
 
@@ -79,44 +80,55 @@ func (w *BtcWallet) History(params ...map[string]string) []*lib.Transaction {
 }
 
 // 获取手续费
-func (w *BtcWallet) Fee() string{
-    // 获取最后一笔账单
-    return btc.GetFee()
+func (w *BtcWallet) Fee() string {
+	// 获取最后一笔账单
+	return btc.GetFee()
 }
 
-func (w *BtcWallet) LastTransferIn()                                                 {}
-func (w *BtcWallet) LastTransferOut()                                                {}
-func (w *BtcWallet) Transfer(addr string, amount float64, options map[string]string) {}
-func (w *BtcWallet) QueryByTxid(txid string) *lib.Transaction                        { return nil }
+func (w *BtcWallet) LastTransferIn()  {}
+func (w *BtcWallet) LastTransferOut() {}
+func (w *BtcWallet) Transfer(addr string, amount string, options ...map[string]string) error {
 
-func (w *BtcWallet) sign(param map[string]string) string {
+	var option map[string]string
+	if len(options) > 0 {
+		option = options[0]
+	}
+
+	fmt.Println(option)
+
+	return nil
+}
+
+func (w *EthWallet) TokenTransfer(addr, amount, contract string, options ...*Option) error {
+	return nil
+}
+
+func (w *BtcWallet) QueryByTxid(txid string) *lib.Transaction { return nil }
+
+func (w *BtcWallet) sign() string {
 	return ""
 }
 
 func (w *BtcWallet) ValidAddress(address string) bool {
 
-    len := len(address)
-    if len < 25 {
-        return false
-    }
+	len := len(address)
+	if len < 25 {
+		return false
+	}
 
+	if strings.HasPrefix(address, "1") {
+		if len >= 26 && len <= 34 {
+			return true
+		}
+	}
 
-    if strings.HasPrefix(address, "1") {
-        if len >= 26 && len <= 34 {
-            return true
-        }
-    }
+	if strings.HasPrefix(address, "3") && len == 34 {
+		return true
+	}
 
+	if strings.HasPrefix(address, "bc1") && len > 34 {
+		return true
+	}
 
-    if strings.HasPrefix(address, "3") && len == 34 {
-        return true
-    }
-
-
-    if strings.HasPrefix(address, "bc1") && len > 34 {
-        return true
-    }
-
-
-    return false
+	return false
 }

@@ -125,23 +125,52 @@ func (w *EthWallet) LastTransferOut() {}
 
 // Transfer
 // Local sign and use etherscan api to transfer.
-func (w *EthWallet) Transfer(addr string, amount float64, options map[string]string) {
+func (w *EthWallet) Transfer(addr string, amount string, options ...map[string]string) error {
 
-	// sign prams:
 	// hex := sign(map[string]string{ })
+	/*
+			var option map[string]string
+			if len(options) > 0 {
+				option = options[0]
+			}
 
-	hex := w.sign(map[string]string{
-		"from":       w.address,
-		"privatekey": w.privateKey,
-		"amount":     strconv.FormatFloat(amount, 'f', 6, 64),
-		"to":         addr,
-	})
+			// sign prams:
+				hex := w.sign(map[string]string{
+					"from":       w.address,
+					"privatekey": w.privateKey,
+					"amount":     amount,
+					"to":         addr,
+				})
+		// 处理 data
 
-	ret := eth.SendRawTransaction(hex)
-	fmt.Println(ret)
+		ret := eth.SendRawTransaction(hex)
 
-	// TODO:
-	// test not finish.
+	*/
+	return nil
+}
+
+func (w *BtcWallet) TokenTransfer(addr, amount, contract string, options ...*Option) error {
+
+	/*
+		option := &Option{}
+		if len(options) > 0 {
+			option = options[0]
+		}
+
+		option.From = w.address
+		option.To = addr
+		option.Amount = amount
+		amount = eth.Str2Hex(amount)
+		option.Data = "0xa9059cbb" + eth.StringPadding64(addr) + eth.StringPadding64(amount)
+
+		hash := w.sign(option)
+
+		fmt.Println("签名", hash)
+				  return sign({address: from,privateKey,data: code,to: contract})
+			 86         .then(hash => Eth.proxy.eth_sendRawTransaction(hash));
+	*/
+
+	return nil
 }
 
 // Query transaction by txid
@@ -150,24 +179,22 @@ func (w *EthWallet) QueryByTxid(txid string) *lib.Transaction {
 }
 
 // params: to:string privatekey:string amount:int data:[]byte gasLimit:int64 gasPrice:int64 chainid:int
-func (w *EthWallet) sign(params map[string]string) string {
+func (w *EthWallet) sign(option *Option) string {
 
 	wg := &sync.WaitGroup{}
 	wc := 0
 
-	nonce, exists := params["nonce"]
-	if !exists {
+	if option.Nonce == "" {
 		wc++
 		go func() {
-			nonce = eth.GetTransactionCount(params["from"])
+			option.Nonce = eth.GetTransactionCount(option.From)
 			wg.Done()
 		}()
 	}
-	gasPrice, exists := params["gasPrice"]
-	if !exists {
+	if option.Gas == "" {
 		wc++
 		go func() {
-			gasPrice = eth.GasPrice()
+			option.Gas = eth.GasPrice()
 			wg.Done()
 		}()
 	}
@@ -175,23 +202,27 @@ func (w *EthWallet) sign(params map[string]string) string {
 	wg.Add(wc)
 	wg.Wait()
 
-	u_nonce, _ := (&big.Int{}).SetString(nonce[2:], 16)
-	a_to := common.HexToAddress(params["to"])
-	i_amount, _ := strconv.ParseFloat(params["amount"], 64)
+	u_nonce, _ := (&big.Int{}).SetString(option.Nonce[2:], 16)
+	a_to := common.HexToAddress(option.To)
+	i_amount, _ := strconv.ParseFloat(option.Amount, 64)
 	u_amount := (&big.Int{}).SetUint64(math.Float64bits(i_amount))
-	u_gasPrice, _ := (&big.Int{}).SetString(gasPrice[2:], 16)
-	b_data := []byte{}
+	u_gasPrice, _ := (&big.Int{}).SetString(option.Gas[2:], 16)
 
-	data, exists := params["data"]
-	if exists {
-		b_data = []byte(data)
-	} else {
-		b_data = nil
+	if option.Data == "" {
+		option.Data = "0x"
 	}
+
+	b_data := []byte(option.Data)
+
+	fmt.Println(u_nonce.Uint64())
+	fmt.Println(u_gasPrice)
+	fmt.Println(string(b_data))
+
+	fmt.Println("检查参数", u_nonce.Uint64(), a_to, u_amount, u_limit, u_gasPrice, b_data)
 
 	tx := types.NewTransaction(u_nonce.Uint64(), a_to, u_amount, u_limit, u_gasPrice, b_data)
 
-	b_privatekey, _ := hexutil.Decode(params["privatekey"])
+	b_privatekey, _ := hexutil.Decode(w.privateKey)
 	privatekey, _ := crypto.ToECDSA(b_privatekey)
 
 	signed, err := types.SignTx(tx, types.NewEIP155Signer(big.NewInt(1)), privatekey)
@@ -206,7 +237,7 @@ func (w *EthWallet) Fee() string {
 	return eth.GasPrice()
 }
 
-func(w *EthWallet) ValidAddress(addr string) bool {
+func (w *EthWallet) ValidAddress(addr string) bool {
 	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
 	return re.MatchString(addr)
 }
