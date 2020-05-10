@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
+    gtype "github.com/eavesmy/golang-lib/type"
 	"github.com/eavesmy/bitcoinPay/lib"
 	"github.com/eavesmy/bitcoinPay/lib/eth"
 	"github.com/ethereum/go-ethereum/common"
@@ -85,36 +86,27 @@ func (w *EthWallet) BalanceOf(addr string, contract string) *big.Int {
 }
 
 // Get history transactions
-func (w *EthWallet) History(params ...map[string]string) []*lib.Transaction {
-	param := map[string]string{}
+func (w *EthWallet) History(options ...*Option) []*lib.Transaction {
 
-	if len(params) > 0 {
-		param = params[0]
+	option := &Option{}
+
+	if len(options) > 0 {
+		option = options[0]
 	}
 
-	_, exists := param["start"]
-	if !exists {
-		param["start"] = "0"
-	}
+	option.Default()
 
-	_, exists = param["end"]
-	if !exists {
-		param["end"] = "latest"
-	}
+    if w.address == "" {
+        fmt.Println("Error: param address missed")
+        return []*lib.Transaction{}
+    }
 
-	_, exists = param["sort"]
-	if !exists {
-		param["sort"] = "asc"
-	}
-
-	_, exists = param["address"]
-	if !exists {
-		fmt.Println("Error: param address missed")
-		return []*lib.Transaction{}
-	}
-
-	return eth.GetTransactions(param)
-
+	return eth.GetTransactions(map[string]string{
+		"start":   gtype.Int2String(option.Start),
+		"end":     gtype.Int2String(option.End),
+		"sort":    option.Sort,
+		"address": w.address,
+	})
 }
 
 // Get latest transfaction with coin in
@@ -149,9 +141,9 @@ func (w *EthWallet) Transfer(addr string, amount string, options ...map[string]s
 	return nil
 }
 
-func (w *BtcWallet) TokenTransfer(addr, amount, contract string, options ...*Option) error {
+// params: to,amount,contract
+func (w *EthWallet) TokenTransfer(addr, amount, contract string, options ...*Option) error {
 
-	/*
 		option := &Option{}
 		if len(options) > 0 {
 			option = options[0]
@@ -162,13 +154,16 @@ func (w *BtcWallet) TokenTransfer(addr, amount, contract string, options ...*Opt
 		option.Amount = amount
 		amount = eth.Str2Hex(amount)
 		option.Data = "0xa9059cbb" + eth.StringPadding64(addr) + eth.StringPadding64(amount)
+        option.Nonce = eth.GetTransactionCount(w.address)
 
 		hash := w.sign(option)
 
 		fmt.Println("签名", hash)
-				  return sign({address: from,privateKey,data: code,to: contract})
-			 86         .then(hash => Eth.proxy.eth_sendRawTransaction(hash));
-	*/
+
+        // 计算 nonce
+
+        ret := eth.SendRawTransaction(hash)
+        fmt.Println(ret)
 
 	return nil
 }
@@ -207,6 +202,8 @@ func (w *EthWallet) sign(option *Option) string {
 	i_amount, _ := strconv.ParseFloat(option.Amount, 64)
 	u_amount := (&big.Int{}).SetUint64(math.Float64bits(i_amount))
 	u_gasPrice, _ := (&big.Int{}).SetString(option.Gas[2:], 16)
+
+    fmt.Println("检查签名参数: ","nonce",1,"from",i_amount,a_to)
 
 	if option.Data == "" {
 		option.Data = "0x"

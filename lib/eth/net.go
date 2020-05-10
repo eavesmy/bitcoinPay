@@ -57,7 +57,6 @@ func GetTokenBalance(addr string, contract string) string {
 	if err != nil {
 		return "0"
 	}
-
 	return data.Result.(string)
 }
 
@@ -75,8 +74,6 @@ func GetTransactionCount(address string) string {
 	if err != nil {
 		return "0x"
 	}
-
-	fmt.Println("获取 nounce", data, err)
 
 	return data.Result.(string)
 }
@@ -126,6 +123,11 @@ func GetTransactionByHash(hash string) *lib.Transaction {
 
 // params: start end sort
 func GetTransactions(params map[string]string) []*lib.Transaction {
+    
+    if params["end"] == "0" {
+        params["end"] = "latest"
+    }
+
 	data, err := getRequest(map[string]string{
 		"module":     "account",
 		"action":     "tokentx",
@@ -134,6 +136,7 @@ func GetTransactions(params map[string]string) []*lib.Transaction {
 		"sort":       params["sort"],
 		"address":    params["address"],
 	})
+
 	if err != nil {
 		return []*lib.Transaction{}
 	}
@@ -154,6 +157,7 @@ func GetTransactions(params map[string]string) []*lib.Transaction {
 
 	return ret
 }
+
 
 // params: [ module action apkKey ...]
 func getRequest(params map[string]string) (*etherscan_data, error) {

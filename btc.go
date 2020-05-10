@@ -75,8 +75,15 @@ func (w *BtcWallet) BalanceOf(addr string, id string) *big.Int {
 	return nil
 }
 
-func (w *BtcWallet) History(params ...map[string]string) []*lib.Transaction {
-	return nil
+func (w *BtcWallet) History(options ...*Option) []*lib.Transaction {
+    option := &Option{}
+
+    if len(options) > 0 {
+        option = options[0]
+    }
+    option.Default()
+    
+    return btc.GetHistory(w.address,option.Page)
 }
 
 // 获取手续费
@@ -99,7 +106,7 @@ func (w *BtcWallet) Transfer(addr string, amount string, options ...map[string]s
 	return nil
 }
 
-func (w *EthWallet) TokenTransfer(addr, amount, contract string, options ...*Option) error {
+func (w *BtcWallet) TokenTransfer(addr, amount, contract string, options ...*Option) error {
 	return nil
 }
 

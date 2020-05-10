@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/eavesmy/bitcoinPay/lib"
 	gtype "github.com/eavesmy/golang-lib/type"
 	"io/ioutil"
 	"net/http"
@@ -21,6 +22,7 @@ const (
 	ADDRDETAIL  = "/v1/address/addr/"
 	ADDRBALANCE = "/v2/address/addr/"
 	GETHHISTORY = "/v1/properties/gethistory/3"
+	HISTORY     = "/v1/transaction/address"
 )
 
 func request(path string, data string) (info []byte) {
@@ -95,4 +97,43 @@ func GetFee() string {
 	json.Unmarshal(res, &ts)
 
 	return ts.Transactions[0].Fee
+}
+
+func GetHistory(addr string, page int) []*lib.Transaction {
+	query := "addr="
+	query += addr + "&page="
+	query += gtype.Int2String(page)
+
+	res := request(HISTORY, query)
+	btc_ts := &HistoryStruct{}
+	json.Unmarshal(res, &btc_ts)
+
+	ts := []*lib.Transaction{}
+
+	for _, item := range btc_ts.Transactions {
+		t := &lib.Transaction{
+			BlockNumber:       gtype.Int2String(item.Block),
+			TimeStamp:         gtype.Int2String(item.Blocktime),
+			Hash:              item.Txid,
+			Nonce:             "",
+			BlockHash:         item.Blockhash,
+			From:              item.Sendingaddress,
+			ContractAddress:   gtype.Int2String(item.Propertyid),
+			To:                item.Referenceaddress,
+			Value:             item.Amount,
+			TokenName:         item.Propertyname,
+			TokenSymbol:       item.Propertyname,
+			TokenDecimal:      "0",
+			TransactionIndex:  "0",
+			Gas:               item.Fee,
+			GasPrice:          "0",
+			GasUsed:           "0",
+			CumulativeGasUsed: "0",
+			Input:             "",
+			Confimations:      gtype.Int2String(item.Confirmations),
+		}
+        ts = append(ts,t)
+	}
+
+	return ts
 }

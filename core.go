@@ -13,7 +13,7 @@ type WalletBase interface {
 	PrivateKey() string
 	Balance() *big.Int
 	BalanceOf(string, string) *big.Int
-	History(...map[string]string) []*lib.Transaction
+	History(...*Option) []*lib.Transaction
 	LastTransferIn()
 	Fee() string
 	LastTransferOut()
@@ -57,4 +57,16 @@ type Option struct {
 	Nonce    string
 	ChanId   int
 	Contract string
+    
+    Page int
+	Start   int
+	End    int 
+	Sort    string
+	Address string
+}
+
+func (o *Option) Default() {
+    if o.Sort == "" {
+        o.Sort = "desc"
+    }
 }
