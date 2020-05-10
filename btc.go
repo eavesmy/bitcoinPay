@@ -8,6 +8,7 @@ import (
 	"github.com/boombuler/barcode/qr"
 	"github.com/eavesmy/bitcoinPay/lib"
 	"github.com/eavesmy/bitcoinPay/lib/btc"
+	gtype "github.com/eavesmy/golang-lib/type"
 	"image/png"
 	"io/ioutil"
 	"math/big"
@@ -76,14 +77,14 @@ func (w *BtcWallet) BalanceOf(addr string, id string) *big.Int {
 }
 
 func (w *BtcWallet) History(options ...*Option) []*lib.Transaction {
-    option := &Option{}
+	option := &Option{}
 
-    if len(options) > 0 {
-        option = options[0]
-    }
-    option.Default()
-    
-    return btc.GetHistory(w.address,option.Page)
+	if len(options) > 0 {
+		option = options[0]
+	}
+	option.Default()
+
+	return btc.GetHistory(w.address, option.Page)
 }
 
 // 获取手续费
@@ -106,8 +107,8 @@ func (w *BtcWallet) Transfer(addr string, amount string, options ...map[string]s
 	return nil
 }
 
-func (w *BtcWallet) TokenTransfer(addr, amount, contract string, options ...*Option) error {
-	return nil
+func (w *BtcWallet) TokenTransfer(addr string, amount *big.Int, contract string, options ...*Option) (string, error) {
+	return "", nil
 }
 
 func (w *BtcWallet) QueryByTxid(txid string) *lib.Transaction { return nil }
@@ -138,4 +139,14 @@ func (w *BtcWallet) ValidAddress(address string) bool {
 	}
 
 	return false
+}
+
+func (w *BtcWallet) Nonce(addrs ...string) uint64 {
+	addr := w.address
+	if len(addrs) > 0 {
+		addr = addrs[0]
+	}
+	nonce := btc.GetTransactionCount(addr)
+	i_nonce := gtype.String2Int(nonce)
+	return uint64(i_nonce)
 }

@@ -4,7 +4,7 @@ import "encoding/hex"
 
 func StringPadding64(str string) string {
 
-	if str[:2] == "0x" {
+	if len(str) > 2 && str[:2] == "0x" {
 		str = str[2:]
 	}
 

@@ -18,9 +18,10 @@ type WalletBase interface {
 	Fee() string
 	LastTransferOut()
 	Transfer(string, string, ...map[string]string) error
-	TokenTransfer(string, string, string, ...*Option) error
+	TokenTransfer(string, *big.Int, string, ...*Option) (string, error)
 	QueryByTxid(string) *lib.Transaction
 	ValidAddress(string) bool
+	Nonce(...string) uint64
 }
 
 func Wallet(chain string, pks ...string) WalletBase {
@@ -50,23 +51,23 @@ func Wallet(chain string, pks ...string) WalletBase {
 type Option struct {
 	From     string
 	To       string
-	Amount   string
+	Amount   *big.Int // wei
 	Data     string
 	Gas      string
 	Limit    int
-	Nonce    string
+	Nonce    uint64
 	ChanId   int
 	Contract string
-    
-    Page int
+
+	Page    int
 	Start   int
-	End    int 
+	End     int
 	Sort    string
 	Address string
 }
 
 func (o *Option) Default() {
-    if o.Sort == "" {
-        o.Sort = "desc"
-    }
+	if o.Sort == "" {
+		o.Sort = "desc"
+	}
 }

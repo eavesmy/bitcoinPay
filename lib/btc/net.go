@@ -132,8 +132,12 @@ func GetHistory(addr string, page int) []*lib.Transaction {
 			Input:             "",
 			Confimations:      gtype.Int2String(item.Confirmations),
 		}
-        ts = append(ts,t)
+		ts = append(ts, t)
 	}
 
 	return ts
+}
+
+func GetTransactionCount(addr string) string {
+	return "0x0"
 }
