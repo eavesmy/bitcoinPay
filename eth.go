@@ -161,7 +161,7 @@ func (w *EthWallet) TokenTransfer(addr string, amount *big.Int, contract string,
 
 	hash := w.sign(option)
 
-	return eth.SendRawTransaction(hash)
+	return eth.SendRawTransaction(hash), nil
 }
 
 // Query transaction by txid

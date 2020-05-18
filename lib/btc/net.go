@@ -15,6 +15,7 @@ import (
 	"strings"
 )
 
+//a5e3555d-93db-48ae-bb4c-0a01449f67d9 blockchan api
 const HOST = "https://api.omniexplorer.info"
 
 // routes
@@ -140,4 +141,8 @@ func GetHistory(addr string, page int) []*lib.Transaction {
 
 func GetTransactionCount(addr string) string {
 	return "0x0"
+}
+
+func GetUnSpent(addr string) {
+
 }

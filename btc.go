@@ -6,13 +6,18 @@ import (
 	"fmt"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
-	"github.com/eavesmy/bitcoinPay/lib"
-	"github.com/eavesmy/bitcoinPay/lib/btc"
-	gtype "github.com/eavesmy/golang-lib/type"
+	// "github.com/btcsuite/btcd/btcjson"
+	// wbtc "github.com/dabankio/wallet-core/core/btc"
+
+	// "github.com/dabankio/wallet-core/core/omni"
 	"image/png"
 	"io/ioutil"
 	"math/big"
 	"strings"
+
+	"github.com/eavesmy/bitcoinPay/lib"
+	"github.com/eavesmy/bitcoinPay/lib/btc"
+	gtype "github.com/eavesmy/golang-lib/type"
 )
 
 type BtcWallet struct {
@@ -107,15 +112,19 @@ func (w *BtcWallet) Transfer(addr string, amount string, options ...map[string]s
 	return nil
 }
 
+type ListUnspentResult struct {
+	TxID string `json:"txid"`
+}
+
 func (w *BtcWallet) TokenTransfer(addr string, amount *big.Int, contract string, options ...*Option) (string, error) {
+
+	// unspent := new(wbtc.BTCUnspent)
+	// unspent.Add(utxo.TxID, int64(utxo.Vout), utxo.Amount, utxo.ScriptPubKey, utxo.RedeemScript)
+
 	return "", nil
 }
 
 func (w *BtcWallet) QueryByTxid(txid string) *lib.Transaction { return nil }
-
-func (w *BtcWallet) sign() string {
-	return ""
-}
 
 func (w *BtcWallet) ValidAddress(address string) bool {
 
@@ -149,4 +158,8 @@ func (w *BtcWallet) Nonce(addrs ...string) uint64 {
 	nonce := btc.GetTransactionCount(addr)
 	i_nonce := gtype.String2Int(nonce)
 	return uint64(i_nonce)
+}
+
+func (w *BtcWallet) sign(option *Option) string {
+	return ""
 }
