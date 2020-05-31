@@ -73,6 +73,7 @@ func GetBalances(addrs []string, id string) map[string]string {
 
 	var info map[string]map[string][]*Balance
 	res := request(ADDRBALANCE, query)
+    fmt.Println(string(res))
 	json.Unmarshal(res, &info)
 
 	ret := map[string]string{}

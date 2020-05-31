@@ -160,7 +160,7 @@ func (w *EthWallet) TokenTransfer(addr string, amount *big.Int, contract string,
 	option.Nonce = w.Nonce(w.address)
 
 	hash := w.sign(option)
-
+    
 	return eth.SendRawTransaction(hash), nil
 }
 
@@ -171,8 +171,6 @@ func (w *EthWallet) QueryByTxid(txid string) *lib.Transaction {
 
 // params: to:string privatekey:string amount:int data:[]byte gasLimit:int64 gasPrice:int64 chainid:int
 func (w *EthWallet) sign(option *Option) string {
-
-	fmt.Println("签名前参数检查: ", option)
 
 	tx := types.NewTransaction(option.Nonce, common.HexToAddress(option.To), option.Amount, GAS_LIMIT, big.NewInt(GAS_PRICE), []byte(option.Data))
 
