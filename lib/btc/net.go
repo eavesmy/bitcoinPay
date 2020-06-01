@@ -27,6 +27,9 @@ const (
 )
 
 func request(path string, data string) (info []byte) {
+    
+    fmt.Println(HOST + path)
+
 	res, err := http.Post(HOST+path, "application/x-www-form-urlencoded", bytes.NewBufferString(data))
 	if err != nil {
 		fmt.Println(err)
@@ -49,6 +52,8 @@ func GetBalance(addr string, id int) int64 {
 
 	var info map[string][]*Addr
 	res := request(ADDRDETAIL, query)
+    
+    fmt.Println(string(res))
 
 	json.Unmarshal(res, &info)
 

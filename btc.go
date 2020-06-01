@@ -2,7 +2,7 @@ package bcp
 
 import (
 	"bytes"
-	"encoding/hex"
+	 // "encoding/hex"
 	"fmt"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
@@ -28,10 +28,10 @@ type BtcWallet struct {
 
 func (w *BtcWallet) New() WalletBase {
 
-	priKey, pubKey := btc.NewPair()
+	priKey, address := btc.NewPair()
 
-	w.address = btc.GetAddress(pubKey)
-	w.privateKey = hex.EncodeToString(priKey)
+	w.address = address
+	w.privateKey = priKey
 
 	return w
 }
