@@ -15,8 +15,9 @@ import (
 	"strings"
 )
 
-//a5e3555d-93db-48ae-bb4c-0a01449f67d9 blockchan api
 const HOST = "https://api.omniexplorer.info"
+const HOST2 = "https://blockchain.info"
+const BLOCKCHAINAPI = "a5e3555d-93db-48ae-bb4c-0a01449f67d9"
 
 // routes
 const (
@@ -24,11 +25,31 @@ const (
 	ADDRBALANCE = "/v2/address/addr/"
 	GETHHISTORY = "/v1/properties/gethistory/3"
 	HISTORY     = "/v1/transaction/address"
+	BTCBALANCE  = "/balance"
 )
 
+func request2(path string) (info []byte) {
+
+	res, err := http.Get(HOST2 + path)
+	if err != nil {
+		fmt.Println(err)
+		request2(path)
+		return
+	}
+
+	defer res.Body.Close()
+
+	info, err = ioutil.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
 func request(path string, data string) (info []byte) {
-    
-    fmt.Println(HOST + path)
+
+	fmt.Println(HOST + path)
 
 	res, err := http.Post(HOST+path, "application/x-www-form-urlencoded", bytes.NewBufferString(data))
 	if err != nil {
@@ -51,9 +72,9 @@ func GetBalance(addr string, id int) int64 {
 	query := "addr=" + addr
 
 	var info map[string][]*Addr
-	res := request(ADDRDETAIL, query)
-    
-    fmt.Println(string(res))
+	res := request(ADDRBALANCE, query)
+
+	fmt.Println(string(res))
 
 	json.Unmarshal(res, &info)
 
@@ -61,11 +82,25 @@ func GetBalance(addr string, id int) int64 {
 
 	for _, item := range info["balance"] {
 		if item.ID == str_id {
+			fmt.Println(item.Value)
 			return gtype.String2Int64(item.Value)
 		}
 	}
 
 	return 0
+}
+
+func GetBtcBalance(addr string) int64 {
+	query := "?active=" + addr
+
+	var info map[string]*B_Balance
+	res := request2(BTCBALANCE + query)
+
+	fmt.Println(string(res))
+
+	json.Unmarshal(res, &info)
+
+	return info[addr].FinalBalance
 }
 
 func GetBalances(addrs []string, id string) map[string]string {
@@ -78,7 +113,7 @@ func GetBalances(addrs []string, id string) map[string]string {
 
 	var info map[string]map[string][]*Balance
 	res := request(ADDRBALANCE, query)
-    fmt.Println(string(res))
+	fmt.Println(string(res))
 	json.Unmarshal(res, &info)
 
 	ret := map[string]string{}

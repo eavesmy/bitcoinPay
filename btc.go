@@ -2,7 +2,7 @@ package bcp
 
 import (
 	"bytes"
-	 // "encoding/hex"
+	// "encoding/hex"
 	"fmt"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
@@ -62,7 +62,7 @@ func (w *BtcWallet) PrivateKey() string {
 }
 
 func (w *BtcWallet) Balance() *big.Int {
-	amount := btc.GetBalance(w.address, w.id)
+	amount := btc.GetBtcBalance(w.address)
 	return big.NewInt(amount)
 }
 

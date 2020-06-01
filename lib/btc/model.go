@@ -94,27 +94,33 @@ type QueryGethHistory struct {
 }
 
 type CoinTransaction []struct {
-	Amount string `json:"amount"`
-	Block int `json:"block"`
-	Blockhash string `json:"blockhash"`
-	Blocktime int `json:"blocktime"`
-	Confirmations int `json:"confirmations"`
-	Divisible bool `json:"divisible"`
-	Fee string `json:"fee"`
-	Flags interface{} `json:"flags"`
-	Ismine bool `json:"ismine"`
-	Positioninblock int `json:"positioninblock"`
-	Propertyid int `json:"propertyid"`
-	Propertyname string `json:"propertyname"`
-	Referenceaddress string `json:"referenceaddress"`
-	Sendingaddress string `json:"sendingaddress"`
-	Txid string `json:"txid"`
-	Type string `json:"type"`
-	TypeInt int `json:"type_int"`
-	Valid bool `json:"valid"`
-	Version int `json:"version"`
+	Amount           string      `json:"amount"`
+	Block            int         `json:"block"`
+	Blockhash        string      `json:"blockhash"`
+	Blocktime        int         `json:"blocktime"`
+	Confirmations    int         `json:"confirmations"`
+	Divisible        bool        `json:"divisible"`
+	Fee              string      `json:"fee"`
+	Flags            interface{} `json:"flags"`
+	Ismine           bool        `json:"ismine"`
+	Positioninblock  int         `json:"positioninblock"`
+	Propertyid       int         `json:"propertyid"`
+	Propertyname     string      `json:"propertyname"`
+	Referenceaddress string      `json:"referenceaddress"`
+	Sendingaddress   string      `json:"sendingaddress"`
+	Txid             string      `json:"txid"`
+	Type             string      `json:"type"`
+	TypeInt          int         `json:"type_int"`
+	Valid            bool        `json:"valid"`
+	Version          int         `json:"version"`
 }
 
 type HistoryStruct struct {
-    Transactions CoinTransaction `json:"transactions"`
+	Transactions CoinTransaction `json:"transactions"`
+}
+
+type B_Balance struct {
+	FinalBalance  int64 `json:"final_balance"`
+	NTx           int   `json:"n_tx"`
+	TotalReceived int   `json:"total_received"`
 }
