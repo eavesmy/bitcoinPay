@@ -4,6 +4,7 @@ type Transaction struct {
 	BlockNumber       string `json:"blockNumber"`
 	TimeStamp         string `json:"timeStamp"`
 	Hash              string `json:"hash"`
+	Valid             bool   `json:"valid"`
 	Nonce             string `json:"nonce"`
 	BlockHash         string `json:"blockHash"`
 	From              string `json:"from"`

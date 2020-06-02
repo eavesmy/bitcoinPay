@@ -49,8 +49,6 @@ func request2(path string) (info []byte) {
 
 func request(path string, data string) (info []byte) {
 
-	fmt.Println(HOST + path)
-
 	res, err := http.Post(HOST+path, "application/x-www-form-urlencoded", bytes.NewBufferString(data))
 	if err != nil {
 		fmt.Println(err)
@@ -74,15 +72,12 @@ func GetBalance(addr string, id int) int64 {
 	var info map[string][]*Addr
 	res := request(ADDRBALANCE, query)
 
-	fmt.Println(string(res))
-
 	json.Unmarshal(res, &info)
 
 	str_id := gtype.Int2String(id)
 
 	for _, item := range info["balance"] {
 		if item.ID == str_id {
-			fmt.Println(item.Value)
 			return gtype.String2Int64(item.Value)
 		}
 	}
@@ -95,8 +90,6 @@ func GetBtcBalance(addr string) int64 {
 
 	var info map[string]*B_Balance
 	res := request2(BTCBALANCE + query)
-
-	fmt.Println(string(res))
 
 	json.Unmarshal(res, &info)
 
@@ -113,7 +106,6 @@ func GetBalances(addrs []string, id string) map[string]string {
 
 	var info map[string]map[string][]*Balance
 	res := request(ADDRBALANCE, query)
-	fmt.Println(string(res))
 	json.Unmarshal(res, &info)
 
 	ret := map[string]string{}
@@ -147,6 +139,7 @@ func GetHistory(addr string, page int) []*lib.Transaction {
 	query += gtype.Int2String(page)
 
 	res := request(HISTORY, query)
+
 	btc_ts := &HistoryStruct{}
 	json.Unmarshal(res, &btc_ts)
 
@@ -172,6 +165,7 @@ func GetHistory(addr string, page int) []*lib.Transaction {
 			GasUsed:           "0",
 			CumulativeGasUsed: "0",
 			Input:             "",
+			Valid:             item.Valid,
 			Confimations:      gtype.Int2String(item.Confirmations),
 		}
 		ts = append(ts, t)
